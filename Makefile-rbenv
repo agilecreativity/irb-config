@@ -1,0 +1,58 @@
+GEMS=pry \
+		pry-doc \
+		pry-debugger \
+		pry-stack_explorer \
+		awesome_print \
+		gnuplot \
+		coderay \
+		colorize
+
+GEMS_NODEPS=commands \
+	rails-env-switcher \
+	rspec-console \
+	cucumber-console \
+	mongoid-colors
+
+TARGETS=$(HOME)/.pryrc $(HOME)/.irbrc
+SHELL=/bin/bash
+CWD=$(shell pwd)
+# only install for 1.9 for now
+RUBIES=$(shell find $(RBENV_ROOT)/versions -type d -maxdepth 1 -mindepth 1 | grep 1.9 | awk -F'/' '{ print $$NF }' )
+
+define check_file
+	@if [[ -e $1 && "$(OVERWRITE)" != "1" ]]; then \
+		echo "make install won't overwrite $1"; \
+		echo "1) remove it yourself or 2) use 'make install OVERWRITE=1'"; \
+		false \
+	else true; \
+	fi
+endef
+
+bold=`tput bold`
+normal=`tput sgr0`
+
+all:
+	@echo type make install
+
+install: $(TARGETS)
+	@echo -e "gems: ${bold}${GEMS}${normal}\n"
+	@echo -e "gems: ${bold}${GEMS_NODEPS}${normal}\n"
+
+	@for RUBY in ${RUBIES}; do \
+	  echo Installing gems for ${bold}$$RUBY${normal}; \
+		rbenv local $$RUBY; \
+		rbenv rehash; \
+		gem install ${GEMS} --no-ri --no-rdoc; \
+		gem install ${GEMS_NODEPS} --ignore-dependencies --no-ri --no-rdoc;
+	done
+	@echo "${bold}Enjoy !${normal}";
+
+$(HOME)/.%: %
+	$(call check_file,$@)
+	ln -fs $(PWD)/$< $@
+
+update:
+	git pull
+	+make install
+
+.PHONY: install update
