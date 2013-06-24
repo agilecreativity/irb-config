@@ -43,7 +43,7 @@ install: $(TARGETS)
 		rbenv local $$RUBY; \
 		rbenv rehash; \
 		gem install ${GEMS} --no-ri --no-rdoc; \
-		gem install ${GEMS_NODEPS} --ignore-dependencies --no-ri --no-rdoc;
+		gem install ${GEMS_NODEPS} --ignore-dependencies --no-ri --no-rdoc; \
 	done
 	@echo "${bold}Enjoy !${normal}";
 
