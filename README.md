@@ -1,5 +1,12 @@
 Installation
 ------------
+For rbenv user
+
+    git clone git://github.com/agilecreativity/irb-config.git ~/.irb
+    cd ~/.irb
+    make -f Makefile-rbenv install
+
+For rvm user, please follow the original instruction below
 
 To install, run
 
